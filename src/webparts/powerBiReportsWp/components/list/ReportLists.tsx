@@ -6,7 +6,8 @@ import { IReportListsState } from './IReportListsState';
 import { ReportDataProvider } from '../dataprovider/ReportDataProvider';
 import IFrameContainer from '../frame/IFrameContainer';
 import { Fabric } from 'office-ui-fabric-react/lib/index';
-import { GroupedList, IGroup, IGroupDividerProps } from 'office-ui-fabric-react/lib/components/GroupedList/index';
+import { GroupedList, IGroup, IGroupDividerProps }
+    from 'office-ui-fabric-react/lib/components/GroupedList';
 import { GroupHeader } from 'office-ui-fabric-react/lib/components/GroupedList/GroupHeader';
 import { findIndex } from 'office-ui-fabric-react/lib/Utilities';
 import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
@@ -103,8 +104,10 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
     private _getAndGroupCustomerItems() {
         this._reportDataProvider.getItems()
             .then((res: IReport[]) => {
-                const _sortedReports = res.sort((a, b) => (a.CategoryName < b.CategoryName) ? -1 : (a.CategoryName > b.CategoryName) ? 1 : 0);
-                const _groups = this._generateIGroups(_sortedReports);
+                //const _sortedReports = res.sort((a, b) => (a.CategoryName < b.CategoryName) ? -1 :
+                //    (a.CategoryName > b.CategoryName) ? 1 : 0);                
+                //const _groups = this._generateIGroups(res, 2, "CategoryName");
+                const _groups = this.__generateIGroups(res, "CategoryName", 0, 2, 0, 0, true);
                 this._selection = new Selection({
                     onSelectionChanged: () => {
                         const _selectedReport: IReport = this._getSelectionDetails();
@@ -125,20 +128,74 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
             });
     }
 
-    private _generateIGroups(sortedCustomerItems: IReport[]): IGroup[] {
+    private _generateIGroups(sortedCustomerItems: IReport[], groupDepth, groupColumnName: string): IGroup[] {
         let _groups: IGroup[] = [];
+        let _groupsNew: IGroup[] = [];
         const _groupByType: _.Dictionary<IReport[]> = groupBy(sortedCustomerItems, (i: IReport) => i.CategoryName);
+
         Object.keys(_groupByType).forEach((group, index) => {
             _groups.push({
                 name: group,
-                key: group,
+                key: group + index,
                 startIndex: findIndex(sortedCustomerItems, (i: IReport) => i.CategoryName === group),
                 count: _groupByType[group].length,
                 isCollapsed: true
             });
         });
 
+        _groupsNew.push(
+            {
+                name: "MRH", key: "MRH0", startIndex: 0, count: 3, isCollapsed: true,
+                children: [
+                    { name: "Compliance", key: "Compliance0", startIndex: 0, count: 2, level: 1, isCollapsed: true },
+                    { name: "Crew", key: "Crew0", startIndex: 2, count: 1, level: 1, isCollapsed: true }
+                ]
+            },
+            {
+                name: "Technical", key: "Technical0", startIndex: 3, count: 1, isCollapsed: true,
+                children: [
+                    { name: "Cost", key: "Cost1", startIndex: 3, count: 1, level: 1, isCollapsed: true }
+                ]
+            }
+        );
+
         return _groups;
+    }
+
+    private __generateIGroups(sortedCustomerItems: IReport[],
+        groupColumnName: string,
+        groupCount: number,
+        groupDepth: number,
+        startIndex: number,
+        level: number = 0,
+        isCollapsed: boolean = true
+    ): IGroup[] {
+        let _groupsNew: IGroup[] = [];
+        const _groupByType: _.Dictionary<IReport[]> = groupBy(sortedCustomerItems, (i: IReport) => {
+            if (groupColumnName === "CategoryName")
+                return i["CategoryName"];
+            return i["SubCategory"];
+        });
+
+        Object.entries(_groupByType).map((group, index) => {
+            const _group = group[0];
+            const _count = group[1].length;
+            const _items = group[1];
+            _groupsNew.push({
+                count: _count,
+                key: _group + index,
+                name: _group,
+                startIndex: startIndex,
+                level: level,
+                isCollapsed: true,
+                children:
+                    (groupDepth > 1 && _items.length > 0)
+                        ? this.__generateIGroups(_items, "SubCategory", _count, groupDepth - 1, startIndex, 1, isCollapsed)
+                        : []
+            });
+            startIndex = startIndex + _count;
+        });
+        return _groupsNew;
     }
 
     public render() {
@@ -206,30 +263,20 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         const onToggleSelectGroup = () => {
             props.onToggleCollapse(props.group);
         };
+        const onToggleCollapse = () => {
+            props.onToggleCollapse(props.group);
+            const _collaspedGroup = props.groups.filter(g => g.key != props.group.key);
+            _collaspedGroup.forEach((_group, index) => {
+                if (!_group.isCollapsed)
+                    props.onToggleCollapse(_group);
+            });
+        };
         return (
-            <GroupHeader {...props} className={classNames.groupHeader} onToggleSelectGroup={onToggleSelectGroup} />
+            <GroupHeader {...props}
+                className={classNames.groupHeader}
+                onToggleCollapse={onToggleCollapse}
+                onToggleSelectGroup={onToggleSelectGroup} />
         );
-    }
-
-    private _onRenderGroupHeader: IDetailsGroupRenderProps['onRenderHeader'] = props => {
-        if (props) {
-            const onToggleSelectGroup = () => {
-                props.onToggleCollapse(props.group);
-            };
-            const iconClass = props.group.isCollapsed ? 'iconCollapsed' : 'iconExpand';
-            return (
-                <div className={classNames.groupHeader}>
-                    <button type="button" className="groupHeaderButton" onClick={onToggleSelectGroup}>
-                        <Icon iconName="ChevronRightMed" className={iconClass} />
-                    </button>
-                    <div className="groupHeaderTitle">
-                        <span>{props.group.name}</span>
-                    </div>
-                </div>
-            );
-        }
-
-        return null;
     }
 
     private _getSelectionDetails(): IReport {

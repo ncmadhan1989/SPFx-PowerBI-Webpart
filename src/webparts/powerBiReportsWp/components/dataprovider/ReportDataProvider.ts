@@ -28,8 +28,9 @@ export class ReportDataProvider implements IReportDataProvider {
         let _reports: IReport[] = [];
         if (this._siteurl && this._reportslistname) {
             return sp.web.lists.getByTitle(this._reportslistname).items
-                .select("ID", "Title", "CategoryName", "ReportURL", "ReportName")
-                .orderBy("ID", true)
+                .select("ID", "Title", "CategoryName", "SubCategory", "ReportURL", "ReportName")
+                .filter("CategoryName ne null and SubCategory ne null")
+                .orderBy("CategoryName,SubCategory", true)
                 .get()
                 .then((results: IReport[]) => {
                     results.forEach((res, index) => {
@@ -39,7 +40,8 @@ export class ReportDataProvider implements IReportDataProvider {
                             Title: res.Title,
                             ReportURL: res.ReportURL,
                             ReportName: res.ReportName,
-                            CategoryName: res.CategoryName
+                            CategoryName: res.CategoryName,
+                            SubCategory: res.SubCategory,
                         });
                     });
                     return _reports;

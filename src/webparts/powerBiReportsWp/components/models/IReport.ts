@@ -5,4 +5,5 @@ export interface IReport {
     ReportURL: string;
     ReportName: string;
     CategoryName: string;
+    SubCategory: string;
 }
