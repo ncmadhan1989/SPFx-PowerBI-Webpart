@@ -19,3 +19,26 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+
+- task: gulp@1
+  inputs:
+    targets: 'bundle'
+    arguments: '--ship'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  inputs:
+    targets: 'package-solution'
+    arguments: '--ship'
+    enableCodeCoverage: false
+
+- task: CopyFiles@2
+  inputs:
+    Contents: '**\*.sppkg'
+    TargetFolder: '$(build.artifactstagingdirectory)/drop'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
