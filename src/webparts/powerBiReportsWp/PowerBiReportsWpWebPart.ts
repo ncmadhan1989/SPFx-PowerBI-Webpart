@@ -20,17 +20,14 @@ export interface IPowerBiReportsWpWebPartProps {
 
 export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowerBiReportsWpWebPartProps> {
 
-  constructor() {
-    super();    
-    sp.setup({
-        sp: {
-            headers: {
-                Accept: "application/json;odata=verbose",
-            },
-            baseUrl: this.context.pageContext.web.absoluteUrl
-        },
+
+  public onInit(): Promise<void> {
+    return super.onInit().then(_ => {
+      sp.setup({
+        spfxContext: this.context
+      });
     });
-}
+  }
 
   public render(): void {
     const element: React.ReactElement<IPowerBiReportsWpProps> = React.createElement(
@@ -54,7 +51,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
   }
 
   protected get disableReactivePropertyChanges(): boolean {
-    return true; 
+    return true;
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
@@ -67,7 +64,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
           groups: [
             {
               groupName: strings.BasicGroupName,
-              groupFields: [                
+              groupFields: [
                 PropertyPaneTextField('listname', {
                   label: 'Reports list name',
                   onGetErrorMessage: this.validateListName.bind(this)
@@ -83,22 +80,22 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
     };
   }
 
-  private async validateListName(value: string): Promise<string>{
-    if(value === null || value.length === 0){
+  private async validateListName(value: string): Promise<string> {
+    if (value === null || value.length === 0) {
       return "Provide the list name";
     }
-    try{
+    try {
       return sp.web.lists.getByTitle(escape(value))
-            .select("ID")
-            .get()
-            .then((result)=>{
-                return "";
-            })
-            .catch((error)=>{
-                return `List '${escape(value)}' doesn't exist in the current site`;
-            });
+        .select("ID")
+        .get()
+        .then((result) => {
+          return "";
+        })
+        .catch((error) => {
+          return `List '${escape(value)}' doesn't exist in the current site`;
+        });
 
-    }catch(error){
+    } catch (error) {
       return error.message;
     }
     return '';
