@@ -24,6 +24,18 @@ export class ReportDataProvider implements IReportDataProvider {
         });
     }
 
+    public getValidList(): Promise<string>{        
+        return sp.web.lists.getByTitle(this._reportslistname)
+            .select("ID")
+            .get()
+            .then((results)=>{
+                return "";
+            })
+            .catch(()=>{
+                return "";
+            });
+    }
+
     public getItems(): Promise<IReport[]> {
         let _reports: IReport[] = [];
         if (this._siteurl && this._reportslistname) {
