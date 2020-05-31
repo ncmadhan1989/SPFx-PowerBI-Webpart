@@ -23,7 +23,7 @@ export default class PowerBiReportsWp extends React.Component<IPowerBiReportsWpP
                   <ReportLists siteurl={this.props.siteurl} listname={this.props.listname}></ReportLists>
                   :
                   <div className="alert alert-danger text-center" role="alert">
-                    Please provide with the Base site url and Reports list name webpart properties
+                    Please provide the Reports list name in the webpart properties pane.
                 </div>
               }
             </DocumentCard>
