@@ -3,20 +3,16 @@
   "id": "65693c9f-018d-4e47-bd23-9c510fcad48e",
   "alias": "PowerBiReportsWpWebPart",
   "componentType": "WebPart",
-  // The "*" signifies that the version should be taken from the package.json
   "version": "*",
   "manifestVersion": 2,
-  // If true, the component can only be installed on sites where Custom Script is allowed.
-  // Components that allow authors to embed arbitrary script code should set this to true.
-  // https://support.office.com/en-us/article/Turn-scripting-capabilities-on-or-off-1f2c515f-5d7e-448a-9fd7-835da935584f
   "requiresCustomScript": false,
   "supportsFullBleed": true,
   "supportedHosts": [
-    "SharePointWebPart"
+    "SharePointWebPart", "SharePointFullPage"
   ],
   "preconfiguredEntries": [
     {
-      "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
       "group": {
         "default": "Custom SPFx Solution"
       },
@@ -28,7 +24,10 @@
       },
       "officeFabricIconFontName": "PowerAppsLogo",
       "properties": {
-        "description": "Webpart will display the PowerBI Reports configured in your list."
+        "description": "Webpart will display the PowerBI Reports configured in your list.",
+        "reportsmenutitle": "Reports Menu",
+        "webparttitle": "Power BI Reports Viewer",
+        "iframeheight": 500
       }
     }
   ]

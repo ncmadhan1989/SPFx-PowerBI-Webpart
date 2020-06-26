@@ -10,7 +10,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 export default class PowerBiReportsWp extends React.Component<IPowerBiReportsWpProps, {}> {
   public render(): React.ReactElement<IPowerBiReportsWpProps> {
     const cardStyles: IDocumentCardStyles = {
-      root: { width: '100%', maxWidth: 'none', minWidth: '800px' },
+      root: {
+        width: '100%',
+        maxWidth: 'none',
+        minWidth: '300px',
+        marginTop: '10px',
+        backgroundColor: '#f3f2f1',
+      }
     };
 
     return (
@@ -18,14 +24,15 @@ export default class PowerBiReportsWp extends React.Component<IPowerBiReportsWpP
         <div className="row">
           <div className="col-lg-12 col-md-12 col-xs-12">
             <DocumentCard type={DocumentCardType.normal} styles={cardStyles}>
-              {
-                (this.props.siteurl && this.props.listname) ?
-                  <ReportLists siteurl={this.props.siteurl} listname={this.props.listname}></ReportLists>
-                  :
-                  <div className="alert alert-danger text-center" role="alert">
-                    Please provide the Reports list name in the webpart properties pane.
-                </div>
-              }
+              <ReportLists
+                siteurl={this.props.siteurl}
+                listname={this.props.listname}
+                iframeheight={this.props.iframeheight}
+                reportsmenutitle={this.props.reportsmenutitle}
+                webparttitle={this.props.webparttitle}
+                openpropertypane={this.props.openpropertypane}
+                >
+              </ReportLists>
             </DocumentCard>
           </div>
         </div>

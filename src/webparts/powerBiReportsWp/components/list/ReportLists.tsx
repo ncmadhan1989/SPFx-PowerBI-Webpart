@@ -6,73 +6,115 @@ import { IReportListsState } from './IReportListsState';
 import { ReportDataProvider } from '../dataprovider/ReportDataProvider';
 import IFrameContainer from '../frame/IFrameContainer';
 import { Fabric } from 'office-ui-fabric-react/lib/index';
-import { GroupedList, IGroup, IGroupDividerProps }
+import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { GroupedList, IGroup, IGroupDividerProps, IGroupHeaderStyles }
     from 'office-ui-fabric-react/lib/components/GroupedList';
-import { GroupHeader } from 'office-ui-fabric-react/lib/components/GroupedList/GroupHeader';
+import { GroupHeader, IGroupHeaderProps } from 'office-ui-fabric-react/lib/components/GroupedList/GroupHeader';
+import { Icon, IconButton, IIconProps } from 'office-ui-fabric-react';
 import { findIndex } from 'office-ui-fabric-react/lib/Utilities';
 import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
 import { SelectionMode, SelectionZone, Selection } from 'office-ui-fabric-react/lib/Selection';
-import { IColumn, DetailsRow, IDetailsGroupRenderProps } from 'office-ui-fabric-react/lib/DetailsList';
-import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { mergeStyleSets, getTheme } from 'office-ui-fabric-react/lib/Styling';
+import {
+    IColumn, DetailsRow,
+    IDetailsRowStyles, IDetailsRowStyleProps, CheckboxVisibility
+} from 'office-ui-fabric-react/lib/DetailsList';
+import { mergeStyleSets, getTheme, mergeStyles } from 'office-ui-fabric-react/lib/Styling';
+import { LayerHost } from 'office-ui-fabric-react/lib/Layer';
+import { Panel, IPanelHeaderRenderer, IPanelProps } from 'office-ui-fabric-react/lib/Panel';
+import { IFocusTrapZoneProps } from 'office-ui-fabric-react/lib/FocusTrapZone';
 
 const theme = getTheme();
+const menuIcon: IIconProps = { iconName: 'GlobalNavButton' };
 const classNames = mergeStyleSets({
     controlWrapper: {
         width: '100%',
-        background: 'rgb(244, 244, 244) !important',
         marginTop: '10px',
     },
-    selectionDetails: {
-        marginBottom: '20px',
-    },
-    detailRow: {
-        width: '100%',
-        background: 'rgb(244, 244, 244) !important',
-        borderBottom: '1px solid rgb(255, 255, 255) !important',
-    },
-    groupHeader: {
-        background: 'gainsboro !important',
-        display: 'flex',
-        alignItems: 'center',
-        height: '42px',
-    },
-    groupHeaderTitle: {
-        paddingLeft: '12px',
-        fontSize: '21px',
-        fontWeight: '300',
+    powerbilogobg: {
+        fontSize: '42px',
         cursor: 'pointer',
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
     },
-    groupHeaderButton: {
-        position: 'relative',
-        padding: '0px',
+    centerbg: {
+        position: 'absolute',
+        top: '50%',
+        left: '0',
+        right: '0',
+        textAlign: 'center',
+        margin: '0 auto'
+    },
+    buttonconfigure: {
+        zIndex: 99999,
+    },
+    menuAppbar: {
+        width: '100%',
+        top: '0',
+        left: 'auto',
+        right: '0',
+        position: 'absolute',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '18px',
-        width: '32px',
-        height: '42px',
-        color: 'rgb(102, 102, 102)',
-        outline: 'transparent',
-        border: 'none !important',
-        background: 'none transparent !important',
+        zIndex: 1100,
+        flexDirection: 'column',
+        backgroundColor: 'rgb(243, 242, 241)',
+        boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)'
     },
-    iconClass: {
-        fontSize: 20
+    menuToolbar: {
+        display: 'flex',
+        position: 'relative',
+        height: '32px',
+        padding: '0 15px 0 15px',
     },
-    iconCollapsed: {
-        transform: 'rotate(0deg) !important'
-    },
-    iconExpand: {
-        transform: 'rotate(90deg) !important'
+    menuHeading: {
+        flexGrow: 1,
+        margin: '0px',
+        lineHeight: '1.75',
+        textAlign: 'center',
     }
+
 });
+
+const layerHostClass = mergeStyles({
+    position: 'absolute',
+    width: 'auto',
+    height: '100%',
+    top: '32px',
+    right: 0,
+    zIndex: 1200
+});
+const detailRowStyle = (props: IDetailsRowStyleProps): Partial<IDetailsRowStyles> => ({
+    ...({
+        root: {
+            width: '100%',
+            background: 'rgb(244, 244, 244)',
+            borderBottom: '1px solid rgb(255, 255, 255) !important'
+        }
+    })
+});
+const groupHeaderStyle = (props: IGroupHeaderProps): Partial<IGroupHeaderStyles> => ({
+    ...({
+        root: {
+            background: 'gainsboro !important',
+            display: 'flex',
+            alignItems: 'center',
+            height: '42px',
+        },
+        title: {
+            fontSize: '16px',
+            fontWeight: '400'
+        }
+    })
+});
+const focusTrapZoneProps: IFocusTrapZoneProps = {
+    isClickableOutsideFocusTrap: true,
+    forceFocusInsideTrap: false,
+};
 
 export interface IReportListsProps {
     siteurl: string;
     listname: string;
+    iframeheight: number;
+    reportsmenutitle: string;
+    webparttitle: string;
+    openpropertypane(): void;
 }
 
 export default class CustomerList extends React.Component<IReportListsProps, IReportListsState> {
@@ -87,8 +129,9 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
 
     constructor(props) {
         super(props);
-        this._reportDataProvider = new ReportDataProvider(props);
+        this._reportDataProvider = ReportDataProvider.getInstance();
         this.state = {
+            isOpen: false,
             listItemsGroupedByCategory: [],
             groups: [],
             selection: this._selection,
@@ -97,16 +140,35 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         };
     }
 
+    private openPanel = () => {
+        this.setState({
+            isOpen: true
+        });
+    }
+
+    private dismissPanel = () => {
+        this.setState({
+            isOpen: false
+        });
+    }
+
     public componentDidMount(): void {
-        this._getAndGroupCustomerItems();
+        if (this.props.listname) {
+            this._getAndGroupCustomerItems();
+        }
+    }
+
+    public componentDidUpdate(prevProps: IReportListsProps, prevState: IReportListsState): void {
+        if (this.props.listname !== prevProps.listname) {
+            if (this.props.listname) {
+                this._getAndGroupCustomerItems();
+            }
+        }
     }
 
     private _getAndGroupCustomerItems() {
-        this._reportDataProvider.getItems()
+        this._reportDataProvider.getItems(this.props.listname)
             .then((res: IReport[]) => {
-                //const _sortedReports = res.sort((a, b) => (a.CategoryName < b.CategoryName) ? -1 :
-                //    (a.CategoryName > b.CategoryName) ? 1 : 0);                
-                //const _groups = this._generateIGroups(res, 2, "CategoryName");
                 const _groups = this.__generateIGroups(res, "CategoryName", 0, 2, 0, 0, true);
                 this._selection = new Selection({
                     onSelectionChanged: () => {
@@ -201,56 +263,95 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
     public render() {
         const { listItemsGroupedByCategory, groups, selection, columns, iframesrc } = this.state;
         return (
-            (this.props.siteurl && this.props.listname) ?
-                (
-                    <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-lg-9">
-                                <div className={classNames.controlWrapper}>
-                                    <IFrameContainer iframesrc={iframesrc} />
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-lg-12">
+                        <div className={classNames.controlWrapper}>
+                            <div className={classNames.menuAppbar}>
+                                <div className={classNames.menuToolbar}>
+                                    <h6 className={classNames.menuHeading}>{this.props.webparttitle}</h6>
+                                    {
+                                        (this.props.listname) ?
+                                            (<IconButton iconProps={menuIcon} title="Open Menu" onClick={this.openPanel} />)
+                                            : null
+                                    }
                                 </div>
                             </div>
-                            <div className="col-lg-3">
-                                <Fabric>
-                                    <div className={classNames.controlWrapper}>
-                                        {
-                                            <FocusZone>
-                                                <SelectionZone selection={selection} selectionMode={SelectionMode.single}>
-                                                    <GroupedList
-                                                        items={listItemsGroupedByCategory}
-                                                        groupProps={{
-                                                            onRenderHeader: this._onRenderHeader
-                                                        }}
-                                                        selection={selection}
-                                                        groups={groups}
-                                                        onRenderCell={this._onRenderCell}
-                                                        selectionMode={SelectionMode.single}
-                                                    />
-                                                </SelectionZone>
-                                            </FocusZone>
-                                        }
-                                    </div>
-                                </Fabric>
-                            </div>
+                            <h3 className={classNames.centerbg}>
+                                {
+                                    (iframesrc) ? null :
+                                        (<div><Icon iconName="PowerBILogo" className={classNames.powerbilogobg}></Icon></div>)
+                                }
+                                {(this.props.listname) ? null :
+                                    (<div>
+                                        <PrimaryButton text="Configure Webpart"
+                                            className={classNames.buttonconfigure}
+                                            onClick={this._openPropertyPane.bind(this)} />
+                                    </div>)
+                                }
+                            </h3>
+                            <IFrameContainer iframesrc={iframesrc} {...this.props} />
+                            <LayerHost id="layerHostMenu" className={layerHostClass} />
                         </div>
                     </div>
-                )
-                :
-                (
-                    <div className="alert alert-danger text-center" role="alert">
-                        Please provide with the Base site url and Reports list name webpart properties
-                    </div>
-                )
+                    {
+                        (this.props.listname) ?
+                            (
+                                <Panel
+                                    isOpen={this.state.isOpen}
+                                    hasCloseButton
+                                    headerText={this.props.reportsmenutitle}
+                                    focusTrapZoneProps={focusTrapZoneProps}
+                                    layerProps={{ hostId: 'layerHostMenu' }}
+                                    onDismiss={this.dismissPanel}
+                                >
+                                    <Fabric>
+                                        <div className={classNames.controlWrapper}>
+                                            {
+                                                <FocusZone>
+                                                    <SelectionZone selection={selection} selectionMode={SelectionMode.single}>
+                                                        <GroupedList
+                                                            items={listItemsGroupedByCategory}
+                                                            groupProps={{
+                                                                onRenderHeader: this._onRenderHeader
+                                                            }}
+                                                            usePageCache={true}
+                                                            selection={selection}
+                                                            groups={groups}
+                                                            onRenderCell={this._onRenderCell}
+                                                            selectionMode={SelectionMode.single}
+                                                        />
+                                                    </SelectionZone>
+                                                </FocusZone>
+                                            }
+                                        </div>
+                                    </Fabric>
+
+                                </Panel>
+                            )
+                            : null
+                    }
+                </div>
+            </div>
         );
+    }
+
+    private _openPropertyPane(e) { 
+        if (e)
+            e.preventDefault();
+
+        this.props.openpropertypane();
     }
 
     private _onRenderCell = (nestingDepth: number, item: IReport, itemIndex: number): JSX.Element => {
         return (
             <DetailsRow
-                className={classNames.detailRow}
+                styles={detailRowStyle}
                 columns={this.state.columns}
                 groupNestingDepth={nestingDepth}
                 item={item}
+                checkboxVisibility={CheckboxVisibility.always}
+                indentWidth={10}
                 itemIndex={itemIndex}
                 selection={this.state.selection}
                 selectionMode={SelectionMode.single}
@@ -273,7 +374,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         };
         return (
             <GroupHeader {...props}
-                className={classNames.groupHeader}
+                styles={groupHeaderStyle}
                 onToggleCollapse={onToggleCollapse}
                 onToggleSelectGroup={onToggleSelectGroup} />
         );

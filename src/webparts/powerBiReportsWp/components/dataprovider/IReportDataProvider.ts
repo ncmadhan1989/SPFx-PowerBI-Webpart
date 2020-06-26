@@ -1,4 +1,5 @@
 import { IReport } from '../models/IReport';
 export interface IReportDataProvider {
-    getItems(): Promise<IReport[]>;
+    isValidList(string): Promise<boolean>;
+    getItems(string): Promise<IReport[]>;
 }

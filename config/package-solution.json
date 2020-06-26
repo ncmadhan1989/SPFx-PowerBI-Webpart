@@ -2,8 +2,9 @@
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
     "name": "power-bi-spfx-webparts-client-side-solution",
+    "title": "PowerBI Reports Viewer Webpart",
     "id": "d9f5bbbe-869c-41b2-97f8-3783df8dc87f",
-    "version": "2.2.0.0",
+    "version": "2.5.0.0",
     "includeClientSideAssets": true,
     "isDomainIsolated": false
   },
