@@ -5,13 +5,13 @@ import { IReport } from '../models/IReport';
 import { IReportListsState } from './IReportListsState';
 import { ReportDataProvider } from '../dataprovider/ReportDataProvider';
 import IFrameContainer from '../frame/IFrameContainer';
-import { Fabric } from 'office-ui-fabric-react/lib/index';
-import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { Fabric, IIconStyles } from 'office-ui-fabric-react/lib/index';
+import { PrimaryButton, IButtonProps, IButtonStyles } from 'office-ui-fabric-react/lib/Button';
 import { GroupedList, IGroup, IGroupDividerProps, IGroupHeaderStyles }
     from 'office-ui-fabric-react/lib/components/GroupedList';
 import { GroupHeader, IGroupHeaderProps } from 'office-ui-fabric-react/lib/components/GroupedList/GroupHeader';
 import { Icon, IconButton, IIconProps } from 'office-ui-fabric-react';
-import { findIndex } from 'office-ui-fabric-react/lib/Utilities';
+import { findIndex, IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
 import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
 import { SelectionMode, SelectionZone, Selection } from 'office-ui-fabric-react/lib/Selection';
 import {
@@ -20,11 +20,12 @@ import {
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { mergeStyleSets, getTheme, mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { LayerHost } from 'office-ui-fabric-react/lib/Layer';
-import { Panel, IPanelHeaderRenderer, IPanelProps } from 'office-ui-fabric-react/lib/Panel';
+import { Panel, IPanelHeaderRenderer, IPanelProps, IPanelStyleProps, IPanelStyles } from 'office-ui-fabric-react/lib/Panel';
 import { IFocusTrapZoneProps } from 'office-ui-fabric-react/lib/FocusTrapZone';
 
 const theme = getTheme();
 const menuIcon: IIconProps = { iconName: 'GlobalNavButton' };
+const closeIcon: IIconProps = { iconName: 'Cancel' };
 const classNames = mergeStyleSets({
     controlWrapper: {
         width: '100%',
@@ -80,6 +81,17 @@ const layerHostClass = mergeStyles({
     right: 0,
     zIndex: 1200
 });
+const panelStyle = (props: IPanelStyleProps): Partial<IPanelStyles> => ({
+    ...({
+        header: {
+            marginTop: '0px !important',
+            marginBottom: '0px !important',
+        },
+        headerText:{
+            fontSize: '16px',
+        }
+    })
+});
 const detailRowStyle = (props: IDetailsRowStyleProps): Partial<IDetailsRowStyles> => ({
     ...({
         root: {
@@ -103,6 +115,14 @@ const groupHeaderStyle = (props: IGroupHeaderProps): Partial<IGroupHeaderStyles>
         }
     })
 });
+const closeIconButtonStyle: IButtonStyles = {
+    root: {
+        fontSize: '14px',
+        fontWeight: '600',
+        float: 'right',
+    }
+};
+
 const focusTrapZoneProps: IFocusTrapZoneProps = {
     isClickableOutsideFocusTrap: true,
     forceFocusInsideTrap: false,
@@ -300,6 +320,9 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                 <Panel
                                     isOpen={this.state.isOpen}
                                     hasCloseButton
+                                    closeButtonAriaLabel="Close"
+                                    onRenderNavigation={this._onRenderPanelNavigation}
+                                    styles={panelStyle}
                                     headerText={this.props.reportsmenutitle}
                                     focusTrapZoneProps={focusTrapZoneProps}
                                     layerProps={{ hostId: 'layerHostMenu' }}
@@ -336,13 +359,23 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         );
     }
 
-    private _openPropertyPane(e) { 
+    private _openPropertyPane(e) {
         if (e)
             e.preventDefault();
 
         this.props.openpropertypane();
     }
 
+    private _onRenderPanelNavigation: IRenderFunction<IPanelProps> = (props, defaultRender) => {
+        return (
+            <>
+                <IconButton iconProps={closeIcon} 
+                    styles={closeIconButtonStyle} 
+                    onClick={this.dismissPanel} title="Close" ariaLabel="Close" />
+            </>
+        );
+    }
+    
     private _onRenderCell = (nestingDepth: number, item: IReport, itemIndex: number): JSX.Element => {
         return (
             <DetailsRow
