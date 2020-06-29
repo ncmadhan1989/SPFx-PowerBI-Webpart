@@ -1,9 +1,14 @@
 import { IReport } from '../models/IReport';
 import { IReportDataProvider } from './IReportDataProvider';
+import { ILogItem } from '../logger/ILogItem';
+import * as util from '../Util';
 import { sp } from '@pnp/sp';
 import '@pnp/sp/webs';
+import "@pnp/sp/site-users";
 import '@pnp/sp/lists';
 import '@pnp/sp/items';
+import { LogLevel } from '@pnp/logging';
+import { ISiteUserProps } from '@pnp/sp/site-users';
 // Singleton class for CURD operation on sharepoint list
 export class ReportDataProvider implements IReportDataProvider {
     private static _instance: ReportDataProvider;
@@ -21,8 +26,25 @@ export class ReportDataProvider implements IReportDataProvider {
         return ReportDataProvider._instance;
     }
 
-    public isValidList(listTitle: string): Promise<boolean> {
-        return sp.web.lists.getByTitle(listTitle)
+    public async getCurrentUserInfo(loginName): Promise<ISiteUserProps>{
+        let user:ISiteUserProps = await (await sp.web.ensureUser(loginName)).data;
+        return user;
+    }
+
+    public async addErrorLogItem(listTitle: string, item: ILogItem): Promise<void> {
+        await sp.web.lists.getByTitle(listTitle)
+            .items
+            .add(item)
+            .then((result) => {
+                console.log('Error item added.');
+            })
+            .catch((error) => {
+                console.log(`Error adding error log item: ${error}`);
+            });
+    }
+
+    public async isValidList(listTitle: string): Promise<boolean> {
+        return await sp.web.lists.getByTitle(listTitle)
             .select("ID")
             .get()
             .then((results) => {
@@ -33,12 +55,12 @@ export class ReportDataProvider implements IReportDataProvider {
             });
     }
 
-    public getItems(listTitle: string): Promise<IReport[]> {
+    public async getItems(listTitle: string): Promise<IReport[]> {
         let _reports: IReport[] = [];
         if (!listTitle)
             return;
 
-        return sp.web.lists.getByTitle(listTitle).items
+        return await sp.web.lists.getByTitle(listTitle).items
             .select("ID", "Title", "CategoryName", "SubCategory", "ReportURL", "ReportName")
             .filter("CategoryName ne null and SubCategory ne null")
             .orderBy("CategoryName,SubCategory", true)
@@ -56,6 +78,10 @@ export class ReportDataProvider implements IReportDataProvider {
                     });
                 });
                 return _reports;
+            })
+            .catch((error) => {
+                util.logError("ReportDataProvider", "getItems", error.stack, LogLevel.Error, error.message);
+                return [];
             });
 
     }

@@ -11,9 +11,11 @@ import * as strings from 'PowerBiReportsWpWebPartStrings';
 import PowerBiReportsWp from './components/PowerBiReportsWp';
 import { IPowerBiReportsWpProps } from './components/IPowerBiReportsWpProps';
 import { ReportDataProvider } from './components/dataprovider/ReportDataProvider';
+import ErrorLogger from './components/logger/ErrorLogger';
 import { sp } from '@pnp/sp';
 import '@pnp/sp/webs';
 import '@pnp/sp/lists';
+import { Logger } from '@pnp/logging';
 
 export interface IPowerBiReportsWpWebPartProps {
   description: string;
@@ -21,6 +23,7 @@ export interface IPowerBiReportsWpWebPartProps {
   iframeheight: number;
   reportsmenutitle: string;
   webparttitle: string;
+  errorloglist: string;
 }
 
 export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowerBiReportsWpWebPartProps> {
@@ -32,6 +35,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
       sp.setup({
         spfxContext: this.context
       });
+      this.registerLogging();
     });
   }
 
@@ -45,13 +49,37 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
         iframeheight: this.properties.iframeheight,
         reportsmenutitle: this.properties.reportsmenutitle,
         webparttitle: this.properties.webparttitle,
-        openpropertypane: () =>{
+        errorloglist: this.properties.errorloglist,
+        openpropertypane: () => {
           this.context.propertyPane.open();
         }
       }
     );
 
     ReactDom.render(element, this.domElement);
+  }
+
+  private registerLogging(): void {
+    try {
+      if (this.context && 
+          this.context.pageContext && 
+          this.properties.errorloglist) {
+        let errorLoggerListener = new ErrorLogger(
+          "PowerBIReportViewer",
+          this.properties.errorloglist,
+          this.context.pageContext.site.absoluteUrl,
+          this.context.pageContext.user.loginName);
+        Logger.subscribe(errorLoggerListener);
+      }
+    }
+    catch (error) {
+      console.log(`Error initializing error logger: ${error}`);
+    }
+    return;
+  }
+
+  protected onAfterPropertyPaneChangesApplied(): void {
+    this.registerLogging();
   }
 
   protected onDispose(): void {
@@ -79,6 +107,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
               groupFields: [
                 PropertyPaneTextField('listname', {
                   label: 'Reports list name',
+                  validateOnFocusOut: true,
                   onGetErrorMessage: this.validateListName.bind(this)
                 }),
                 PropertyPaneTextField('webparttitle', {
@@ -86,6 +115,11 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
                 }),
                 PropertyPaneTextField('reportsmenutitle', {
                   label: "Menu title"
+                }),
+                PropertyPaneTextField('errorloglist', {
+                  label: "Error list title",
+                  validateOnFocusOut: true,
+                  onGetErrorMessage: this.validateListName.bind(this)
                 }),
                 PropertyPaneSlider('iframeheight', {
                   label: 'Set IFrame height',
@@ -108,20 +142,18 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
 
   private async validateListName(value: string): Promise<string> {
     if (value === null || value.length === 0) {
-      return "Provide the list name";
+      return "Provide the list title";
     }
     try {
-      return this._reportDataProvider.isValidList(escape(value))
-        .then((result) => {
-          if (result)
-            return '';
+      let isListExists = await this._reportDataProvider.isValidList(escape(value));
+      if (isListExists)
+        return '';
 
-          return `List '${escape(value)}' doesn't exist in the current site`;
-        });
+      return `List '${escape(value)}' doesn't exist in the current site`;
     }
     catch (error) {
       return error.message;
-    }    
+    }
   }
 
 }

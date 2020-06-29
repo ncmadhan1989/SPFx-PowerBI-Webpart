@@ -16,6 +16,7 @@
     "@microsoft/sp-lodash-subset": "1.10.0",
     "@microsoft/sp-property-pane": "1.10.0",
     "@microsoft/sp-webpart-base": "1.10.0",
+    "@pnp/logging": "^2.0.6",
     "@pnp/sp": "^2.0.3",
     "@types/es6-promise": "0.0.33",
     "@types/react": "16.8.8",

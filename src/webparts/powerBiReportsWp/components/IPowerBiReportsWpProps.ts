@@ -5,5 +5,6 @@ export interface IPowerBiReportsWpProps {
   iframeheight: number;
   reportsmenutitle: string;
   webparttitle: string;
+  errorloglist: string;
   openpropertypane(): void;
 }

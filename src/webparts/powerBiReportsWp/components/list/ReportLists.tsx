@@ -20,8 +20,9 @@ import {
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { mergeStyleSets, getTheme, mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { LayerHost } from 'office-ui-fabric-react/lib/Layer';
-import { Panel, IPanelHeaderRenderer, IPanelProps, IPanelStyleProps, IPanelStyles } from 'office-ui-fabric-react/lib/Panel';
+import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles } from 'office-ui-fabric-react/lib/Panel';
 import { IFocusTrapZoneProps } from 'office-ui-fabric-react/lib/FocusTrapZone';
+import * as util from '../Util';
 
 const theme = getTheme();
 const menuIcon: IIconProps = { iconName: 'GlobalNavButton' };
@@ -72,7 +73,6 @@ const classNames = mergeStyleSets({
     }
 
 });
-
 const layerHostClass = mergeStyles({
     position: 'absolute',
     width: 'auto',
@@ -122,7 +122,6 @@ const closeIconButtonStyle: IButtonStyles = {
         float: 'right',
     }
 };
-
 const focusTrapZoneProps: IFocusTrapZoneProps = {
     isClickableOutsideFocusTrap: true,
     forceFocusInsideTrap: false,
