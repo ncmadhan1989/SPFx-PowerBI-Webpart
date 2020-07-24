@@ -1,127 +1,28 @@
 import * as React from 'react';
+import { styles, classNames, icons } from '../globalStyles';
 import { groupBy } from '@microsoft/sp-lodash-subset';
 import { } from '@microsoft/sp-lodash-subset';
 import { IReport } from '../models/IReport';
 import { IReportListsState } from './IReportListsState';
 import { ReportDataProvider } from '../dataprovider/ReportDataProvider';
 import IFrameContainer from '../frame/IFrameContainer';
-import { Fabric, IIconStyles } from 'office-ui-fabric-react/lib/index';
-import { PrimaryButton, IButtonProps, IButtonStyles } from 'office-ui-fabric-react/lib/Button';
-import { GroupedList, IGroup, IGroupDividerProps, IGroupHeaderStyles }
+import { Fabric } from 'office-ui-fabric-react/lib/index';
+import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import { GroupedList, IGroup, IGroupDividerProps }
     from 'office-ui-fabric-react/lib/components/GroupedList';
-import { GroupHeader, IGroupHeaderProps } from 'office-ui-fabric-react/lib/components/GroupedList/GroupHeader';
-import { Icon, IconButton, IIconProps } from 'office-ui-fabric-react';
+import { GroupHeader } from 'office-ui-fabric-react/lib/components/GroupedList/GroupHeader';
+import { Icon, IconButton } from 'office-ui-fabric-react';
 import { findIndex, IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
 import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
 import { SelectionMode, SelectionZone, Selection } from 'office-ui-fabric-react/lib/Selection';
 import {
-    IColumn, DetailsRow,
-    IDetailsRowStyles, IDetailsRowStyleProps, CheckboxVisibility
+    IColumn, DetailsRow, CheckboxVisibility
 } from 'office-ui-fabric-react/lib/DetailsList';
-import { mergeStyleSets, getTheme, mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import { LayerHost } from 'office-ui-fabric-react/lib/Layer';
-import { Panel, IPanelProps, IPanelStyleProps, IPanelStyles } from 'office-ui-fabric-react/lib/Panel';
+import { Panel, IPanelProps } from 'office-ui-fabric-react/lib/Panel';
+import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { IFocusTrapZoneProps } from 'office-ui-fabric-react/lib/FocusTrapZone';
-import * as util from '../Util';
 
-const theme = getTheme();
-const menuIcon: IIconProps = { iconName: 'GlobalNavButton' };
-const closeIcon: IIconProps = { iconName: 'Cancel' };
-const classNames = mergeStyleSets({
-    controlWrapper: {
-        width: '100%',
-        marginTop: '10px',
-    },
-    powerbilogobg: {
-        fontSize: '42px',
-        cursor: 'pointer',
-    },
-    centerbg: {
-        position: 'absolute',
-        top: '50%',
-        left: '0',
-        right: '0',
-        textAlign: 'center',
-        margin: '0 auto'
-    },
-    buttonconfigure: {
-        zIndex: 99999,
-    },
-    menuAppbar: {
-        width: '100%',
-        top: '0',
-        left: 'auto',
-        right: '0',
-        position: 'absolute',
-        display: 'flex',
-        zIndex: 1100,
-        flexDirection: 'column',
-        backgroundColor: 'rgb(243, 242, 241)',
-        boxShadow: '0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12)'
-    },
-    menuToolbar: {
-        display: 'flex',
-        position: 'relative',
-        height: '32px',
-        padding: '0 15px 0 15px',
-    },
-    menuHeading: {
-        flexGrow: 1,
-        margin: '0px',
-        lineHeight: '1.75',
-        textAlign: 'center',
-    }
-
-});
-const layerHostClass = mergeStyles({
-    position: 'absolute',
-    width: 'auto',
-    height: '100%',
-    top: '32px',
-    right: 0,
-    zIndex: 1200
-});
-const panelStyle = (props: IPanelStyleProps): Partial<IPanelStyles> => ({
-    ...({
-        header: {
-            marginTop: '0px !important',
-            marginBottom: '0px !important',
-        },
-        headerText:{
-            fontSize: '16px',
-        }
-    })
-});
-const detailRowStyle = (props: IDetailsRowStyleProps): Partial<IDetailsRowStyles> => ({
-    ...({
-        root: {
-            width: '100%',
-            background: 'rgb(244, 244, 244)',
-            borderBottom: '1px solid rgb(255, 255, 255) !important'
-        }
-    })
-});
-const groupHeaderStyle = (props: IGroupHeaderProps): Partial<IGroupHeaderStyles> => ({
-    ...({
-        root: {
-            background: 'gainsboro !important',
-            display: 'flex',
-            alignItems: 'center',
-            height: '42px',
-        },
-        title: {
-            fontSize: '16px',
-            fontWeight: '400'
-        }
-    })
-});
-const closeIconButtonStyle: IButtonStyles = {
-    root: {
-        fontSize: '14px',
-        fontWeight: '600',
-        float: 'right',
-    }
-};
 const focusTrapZoneProps: IFocusTrapZoneProps = {
     isClickableOutsideFocusTrap: true,
     forceFocusInsideTrap: false,
@@ -138,6 +39,7 @@ export interface IReportListsProps {
 
 export default class CustomerList extends React.Component<IReportListsProps, IReportListsState> {
     private _reportDataProvider: ReportDataProvider;
+    private _results: IReport[];
     private _selection: Selection = null;
     private _columns: IColumn[] = [{
         key: "ReportName",
@@ -150,7 +52,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         super(props);
         this._reportDataProvider = ReportDataProvider.getInstance();
         this.state = {
-            isOpen: false,
+            isOpen: true,
             listItemsGroupedByCategory: [],
             groups: [],
             selection: this._selection,
@@ -188,25 +90,30 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
     private _getAndGroupCustomerItems() {
         this._reportDataProvider.getItems(this.props.listname)
             .then((res: IReport[]) => {
-                const _groups = this.__generateIGroups(res, "CategoryName", 0, 2, 0, 0, true);
-                this._selection = new Selection({
-                    onSelectionChanged: () => {
-                        const _selectedReport: IReport = this._getSelectionDetails();
-                        if (_selectedReport) {
-                            this.setState({
-                                iframesrc: _selectedReport.ReportURL
-                            });
-                        }
-                    },
-                });
-                this._selection.setItems(res);
-                this.setState({
-                    listItemsGroupedByCategory: res,
-                    groups: _groups,
-                    selection: this._selection,
-                    columns: this._columns
-                });
+                this._results = res;
+                this._setResults(res);
             });
+    }
+
+    private _setResults(res: IReport[]) {
+        const _groups = this.__generateIGroups(res, "CategoryName", 0, 2, 0, 0, true);
+        this._selection = new Selection({
+            onSelectionChanged: () => {
+                const _selectedReport: IReport = this._getSelectionDetails();
+                if (_selectedReport) {
+                    this.setState({
+                        iframesrc: _selectedReport.ReportURL
+                    });
+                }
+            },
+        });
+        this._selection.setItems(res);        
+        this.setState({
+            listItemsGroupedByCategory: res,
+            groups: _groups,
+            selection: this._selection,
+            columns: this._columns
+        });
     }
 
     private _generateIGroups(sortedCustomerItems: IReport[], groupDepth, groupColumnName: string): IGroup[] {
@@ -279,6 +186,19 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         return _groupsNew;
     }
 
+    private _onSearchReport = (text: string) => {
+        const _prevResults: IReport[] = this._results;
+        const _filter: IReport[] = text ?
+            _prevResults.filter(res => res.ReportName.toLocaleLowerCase().indexOf(text) > -1)
+            :
+            this._results;
+        this._setResults(_filter);
+    }
+
+    private _onSearchCleared = (ev: React.FormEvent<HTMLElement | HTMLTextAreaElement>) => {
+        this._setResults(this._results);
+    }
+
     public render() {
         const { listItemsGroupedByCategory, groups, selection, columns, iframesrc } = this.state;
         return (
@@ -291,7 +211,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                     <h6 className={classNames.menuHeading}>{this.props.webparttitle}</h6>
                                     {
                                         (this.props.listname) ?
-                                            (<IconButton iconProps={menuIcon} title="Open Menu" onClick={this.openPanel} />)
+                                            (<IconButton iconProps={icons.menuIcon} styles={styles.menuIconStyles} title="Open Menu" onClick={this.openPanel} />)
                                             : null
                                     }
                                 </div>
@@ -310,7 +230,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                 }
                             </h3>
                             <IFrameContainer iframesrc={iframesrc} {...this.props} />
-                            <LayerHost id="layerHostMenu" className={layerHostClass} />
+                            <LayerHost id="layerHostMenu" className={classNames.layerHostClass} />
                         </div>
                     </div>
                     {
@@ -320,8 +240,8 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                     isOpen={this.state.isOpen}
                                     hasCloseButton
                                     closeButtonAriaLabel="Close"
-                                    onRenderNavigation={this._onRenderPanelNavigation}
-                                    styles={panelStyle}
+                                    onRenderNavigationContent={this._onRenderPanelNavigation}
+                                    styles={styles.panelStyles}
                                     headerText={this.props.reportsmenutitle}
                                     focusTrapZoneProps={focusTrapZoneProps}
                                     layerProps={{ hostId: 'layerHostMenu' }}
@@ -368,17 +288,26 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
     private _onRenderPanelNavigation: IRenderFunction<IPanelProps> = (props, defaultRender) => {
         return (
             <>
-                <IconButton iconProps={closeIcon} 
-                    styles={closeIconButtonStyle} 
+                <SearchBox
+                    placeholder="Search report..."
+                    ariaLabel="Search the report."
+                    iconProps={icons.filterIcon}
+                    styles={styles.searchBoxStyles}
+                    onClear={this._onSearchCleared}
+                    onEscape={this._onSearchCleared}
+                    onSearch={this._onSearchReport}
+                />
+                <IconButton iconProps={icons.closeIcon}
+                    styles={styles.closeIconButtonStyles}
                     onClick={this.dismissPanel} title="Close" ariaLabel="Close" />
             </>
         );
     }
-    
+
     private _onRenderCell = (nestingDepth: number, item: IReport, itemIndex: number): JSX.Element => {
         return (
             <DetailsRow
-                styles={detailRowStyle}
+                styles={styles.detailsRowStyles}
                 columns={this.state.columns}
                 groupNestingDepth={nestingDepth}
                 item={item}
@@ -406,7 +335,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         };
         return (
             <GroupHeader {...props}
-                styles={groupHeaderStyle}
+                styles={styles.groupHeaderStyles}
                 onToggleCollapse={onToggleCollapse}
                 onToggleSelectGroup={onToggleSelectGroup} />
         );
