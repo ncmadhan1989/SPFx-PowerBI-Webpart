@@ -1,6 +1,6 @@
 import { mergeStyleSets, getTheme } from 'office-ui-fabric-react/lib/Styling';
 import { IDocumentCardStyles } from 'office-ui-fabric-react/lib/DocumentCard';
-import { IIconProps, IGroupHeaderStyles, IGroupHeaderStyleProps } from 'office-ui-fabric-react/lib/index';
+import { IIconProps, IGroupHeaderStyles, IGroupHeaderStyleProps, IToggleStyles, IToggleStyleProps } from 'office-ui-fabric-react/lib/index';
 import { IButtonStyles } from 'office-ui-fabric-react/lib/Button';
 import { IPanelStyles, IPanelStyleProps } from 'office-ui-fabric-react/lib/Panel';
 import { ISearchBoxStyles, ISearchBoxStyleProps } from 'office-ui-fabric-react/lib/SearchBox';
@@ -23,6 +23,12 @@ const closeIconButtonStyles: IButtonStyles = {
         fontWeight: '600',        
     }
 };
+const expandCollapseIconStyles: IButtonStyles ={
+    root:{
+        fontSize: '16px',
+        lineHeight: '2',
+    }
+};
 const menuIconStyles: IButtonStyles = {
     root:{
         color: '#000000'
@@ -36,6 +42,10 @@ const panelStyles = (props: IPanelStyleProps): Partial<IPanelStyles> => ({
         },
         headerText: {
             fontSize: '16px',
+        },
+        content:{
+            paddingLeft: '15px !important',
+            paddingRight: '15px !important'
         }
     })
 });
@@ -70,25 +80,41 @@ const searchBoxStyles = (props: ISearchBoxStyleProps): Partial<ISearchBoxStyles>
         }
     })
 });
+const toggleExpandCollapse = (props: IToggleStyleProps): Partial<IToggleStyles> => ({
+    ...({
+        root:{
+            marginTop: '10px'
+        },
+        text:{
+            fontSize: '12px'
+        }
+    })
+});
 
 export const styles = {
     cardStyles: cardStyles,
     closeIconButtonStyles: closeIconButtonStyles,
     menuIconStyles: menuIconStyles,
+    expandCollapseIconStyles: expandCollapseIconStyles,
     panelStyles: panelStyles,
     detailsRowStyles: detailRowStyles,
     groupHeaderStyles: groupHeaderStyles,
-    searchBoxStyles: searchBoxStyles
+    searchBoxStyles: searchBoxStyles,
+    toggleExpandCollapse: toggleExpandCollapse,
 };
 
 const menuIcon: IIconProps = { iconName: 'GlobalNavButton' };
 const closeIcon: IIconProps = { iconName: 'Cancel' };
 const filterIcon: IIconProps = { iconName: 'Filter' };
+const expandIcon: IIconProps = { iconName: 'ExploreContent' };
+const collapseIcon: IIconProps = { iconName: 'CollapseContent' };
 
 export const icons = {
     menuIcon: menuIcon,
     closeIcon: closeIcon,
-    filterIcon: filterIcon
+    filterIcon: filterIcon,
+    expandIcon: expandIcon,
+    collapseIcon: collapseIcon,
 };
 
 export const classNames = mergeStyleSets({
@@ -102,7 +128,7 @@ export const classNames = mergeStyleSets({
     },
     controlWrapper: {
         width: '100%',
-        marginTop: '10px',
+        marginTop: '5px',
     },
     layerHostClass: {
         position: 'absolute',
@@ -124,6 +150,10 @@ export const classNames = mergeStyleSets({
         right: '0',
         textAlign: 'center',
         margin: '0 auto'
+    },
+    panelHeader:{
+        paddingLeft: '40px',
+        paddingRight: '40px',
     },
     buttonconfigure: {
         zIndex: 99999,        

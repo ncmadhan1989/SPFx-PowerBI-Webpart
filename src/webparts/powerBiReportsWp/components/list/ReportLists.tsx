@@ -8,10 +8,13 @@ import { ReportDataProvider } from '../dataprovider/ReportDataProvider';
 import IFrameContainer from '../frame/IFrameContainer';
 import { Fabric } from 'office-ui-fabric-react/lib/index';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
-import { GroupedList, IGroup, IGroupDividerProps }
+import { Stack } from 'office-ui-fabric-react/lib/Stack';
+import { Label } from 'office-ui-fabric-react/lib/Label';
+import { GroupedList, IGroup }
     from 'office-ui-fabric-react/lib/components/GroupedList';
-import { GroupHeader } from 'office-ui-fabric-react/lib/components/GroupedList/GroupHeader';
+import { GroupHeader, IGroupHeaderProps } from 'office-ui-fabric-react/lib/components/GroupedList/GroupHeader';
 import { Icon, IconButton } from 'office-ui-fabric-react';
+import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import { findIndex, IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
 import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
 import { SelectionMode, SelectionZone, Selection } from 'office-ui-fabric-react/lib/Selection';
@@ -19,7 +22,7 @@ import {
     IColumn, DetailsRow, CheckboxVisibility
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { LayerHost } from 'office-ui-fabric-react/lib/Layer';
-import { Panel, IPanelProps } from 'office-ui-fabric-react/lib/Panel';
+import { Panel, IPanelProps, IPanelHeaderRenderer } from 'office-ui-fabric-react/lib/Panel';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { IFocusTrapZoneProps } from 'office-ui-fabric-react/lib/FocusTrapZone';
 
@@ -53,6 +56,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         this._reportDataProvider = ReportDataProvider.getInstance();
         this.state = {
             isOpen: true,
+            isAllGroupsCollapsed: false,
             listItemsGroupedByCategory: [],
             groups: [],
             selection: this._selection,
@@ -107,7 +111,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                 }
             },
         });
-        this._selection.setItems(res);        
+        this._selection.setItems(res);
         this.setState({
             listItemsGroupedByCategory: res,
             groups: _groups,
@@ -175,7 +179,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                 name: _group,
                 startIndex: startIndex,
                 level: level,
-                isCollapsed: true,
+                isCollapsed: isCollapsed,
                 children:
                     (groupDepth > 1 && _items.length > 0)
                         ? this.__generateIGroups(_items, "SubCategory", _count, groupDepth - 1, startIndex, 1, isCollapsed)
@@ -195,12 +199,26 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         this._setResults(_filter);
     }
 
+    private _onExpandCollapseAll = (ev: React.MouseEvent<HTMLElement>, checked: boolean) => {
+        const _groups = this.__generateIGroups(this._results, "CategoryName", 0, 2, 0, 0, !checked);
+        this.setState({
+            groups: _groups,
+        });
+    }
+
+    private _onCollapseAll = () => {
+        const _groups = this.__generateIGroups(this._results, "CategoryName", 0, 2, 0, 0, true);
+        this.setState({
+            groups: _groups,
+        });
+    }
+
     private _onSearchCleared = (ev: React.FormEvent<HTMLElement | HTMLTextAreaElement>) => {
         this._setResults(this._results);
     }
 
     public render() {
-        const { listItemsGroupedByCategory, groups, selection, columns, iframesrc } = this.state;
+        const { listItemsGroupedByCategory, isAllGroupsCollapsed, groups, selection, columns, iframesrc } = this.state;
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -240,9 +258,9 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                     isOpen={this.state.isOpen}
                                     hasCloseButton
                                     closeButtonAriaLabel="Close"
-                                    onRenderNavigationContent={this._onRenderPanelNavigation}
+                                    onRenderHeader={this._onRenderPanelHeader}
+                                    onRenderNavigationContent={this._onRenderPanelNavigationContent}
                                     styles={styles.panelStyles}
-                                    headerText={this.props.reportsmenutitle}
                                     focusTrapZoneProps={focusTrapZoneProps}
                                     layerProps={{ hostId: 'layerHostMenu' }}
                                     onDismiss={this.dismissPanel}
@@ -285,7 +303,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         this.props.openpropertypane();
     }
 
-    private _onRenderPanelNavigation: IRenderFunction<IPanelProps> = (props, defaultRender) => {
+    private _onRenderPanelNavigationContent: IRenderFunction<IPanelProps> = (props, defaultRender) => {
         return (
             <>
                 <SearchBox
@@ -300,6 +318,18 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                 <IconButton iconProps={icons.closeIcon}
                     styles={styles.closeIconButtonStyles}
                     onClick={this.dismissPanel} title="Close" ariaLabel="Close" />
+            </>
+        );
+    }
+
+    private _onRenderPanelHeader: IPanelHeaderRenderer = (props, defaultRender) => {
+        return (
+            <>
+                <Stack horizontal tokens={{ childrenGap: 10 }} className={classNames.panelHeader}>
+                    <Label styles={{ root: { fontSize: '18px' } }}>{this.props.reportsmenutitle}</Label>
+                    <Toggle onText="Expand" offText="Collapse" 
+                        onChange={this._onExpandCollapseAll} styles={styles.toggleExpandCollapse} />                    
+                </Stack>
             </>
         );
     }
@@ -321,7 +351,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         );
     }
 
-    private _onRenderHeader(props: IGroupDividerProps): JSX.Element {
+    private _onRenderHeader(props: IGroupHeaderProps): JSX.Element {
         const onToggleSelectGroup = () => {
             props.onToggleCollapse(props.group);
         };
