@@ -6,7 +6,6 @@ import { IReport } from '../models/IReport';
 import { IReportListsState } from './IReportListsState';
 import { ReportDataProvider } from '../dataprovider/ReportDataProvider';
 import IFrameContainer from '../frame/IFrameContainer';
-import PanelHost from './PanelHost';
 import { Fabric } from 'office-ui-fabric-react/lib/index';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
