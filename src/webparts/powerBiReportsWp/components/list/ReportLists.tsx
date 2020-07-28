@@ -6,6 +6,7 @@ import { IReport } from '../models/IReport';
 import { IReportListsState } from './IReportListsState';
 import { ReportDataProvider } from '../dataprovider/ReportDataProvider';
 import IFrameContainer from '../frame/IFrameContainer';
+import PanelHost from './PanelHost';
 import { Fabric } from 'office-ui-fabric-react/lib/index';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
@@ -36,6 +37,7 @@ export interface IReportListsProps {
     listname: string;
     iframeheight: number;
     reportsmenutitle: string;
+    menuposition: string;
     webparttitle: string;
     openpropertypane(): void;
 }
@@ -59,6 +61,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
             isAllGroupsCollapsed: false,
             listItemsGroupedByCategory: [],
             groups: [],
+            menuPosition: "right",
             selection: this._selection,
             columns: [],
             iframesrc: ""
@@ -206,13 +209,6 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         });
     }
 
-    private _onCollapseAll = () => {
-        const _groups = this.__generateIGroups(this._results, "CategoryName", 0, 2, 0, 0, true);
-        this.setState({
-            groups: _groups,
-        });
-    }
-
     private _onSearchCleared = (ev: React.FormEvent<HTMLElement | HTMLTextAreaElement>) => {
         this._setResults(this._results);
     }
@@ -226,11 +222,22 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                         <div className={classNames.controlWrapper}>
                             <div className={classNames.menuAppbar}>
                                 <div className={classNames.menuToolbar}>
-                                    <h6 className={classNames.menuHeading}>{this.props.webparttitle}</h6>
+                                    {
+                                        this.props.menuposition == 'right' ?
+                                            <h6 className={classNames.menuHeading}>{this.props.webparttitle}</h6> :
+                                            null
+                                    }
                                     {
                                         (this.props.listname) ?
-                                            (<IconButton iconProps={icons.menuIcon} styles={styles.menuIconStyles} title="Open Menu" onClick={this.openPanel} />)
+                                            (<IconButton iconProps={icons.menuIcon}
+                                                styles={styles.menuIconStyles} title="Open Menu"
+                                                onClick={this.openPanel} />)
                                             : null
+                                    }
+                                    {
+                                        this.props.menuposition == 'left' ?
+                                            <h6 className={classNames.menuHeading}>{this.props.webparttitle}</h6> :
+                                            null
                                     }
                                 </div>
                             </div>
@@ -248,7 +255,12 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                 }
                             </h3>
                             <IFrameContainer iframesrc={iframesrc} {...this.props} />
-                            <LayerHost id="layerHostMenu" className={classNames.layerHostClass} />
+                            <LayerHost id="layerHostMenu"
+                                className={this.props.menuposition == 'right' ?
+                                    classNames.layerHostClassRight :
+                                    classNames.layerHostClassLeft
+                                }
+                            />
                         </div>
                     </div>
                     {
@@ -260,7 +272,9 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                     closeButtonAriaLabel="Close"
                                     onRenderHeader={this._onRenderPanelHeader}
                                     onRenderNavigationContent={this._onRenderPanelNavigationContent}
-                                    styles={styles.panelStyles}
+                                    styles={this.props.menuposition == 'right' ?
+                                        styles.panelRightStyles :
+                                        styles.panelLeftStyles}
                                     focusTrapZoneProps={focusTrapZoneProps}
                                     layerProps={{ hostId: 'layerHostMenu' }}
                                     onDismiss={this.dismissPanel}
@@ -327,8 +341,8 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
             <>
                 <Stack horizontal tokens={{ childrenGap: 10 }} className={classNames.panelHeader}>
                     <Label styles={{ root: { fontSize: '18px' } }}>{this.props.reportsmenutitle}</Label>
-                    <Toggle onText="Expand" offText="Collapse" 
-                        onChange={this._onExpandCollapseAll} styles={styles.toggleExpandCollapse} />                    
+                    <Toggle onText="Expand" offText="Collapse"
+                        onChange={this._onExpandCollapseAll} styles={styles.toggleExpandCollapse} />
                 </Stack>
             </>
         );

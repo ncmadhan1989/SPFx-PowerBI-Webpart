@@ -30,6 +30,7 @@ export default class PowerBiReportsWp extends React.Component<IPowerBiReportsWpP
                 iframeheight={this.props.iframeheight}
                 reportsmenutitle={this.props.reportsmenutitle}
                 webparttitle={this.props.webparttitle}
+                menuposition={this.props.menuposition}
                 openpropertypane={this.props.openpropertypane}
                 >
               </ReportLists>

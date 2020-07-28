@@ -4,7 +4,8 @@ import { Version } from '@microsoft/sp-core-library';
 import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField,
-  PropertyPaneSlider
+  PropertyPaneSlider,
+  PropertyPaneChoiceGroup
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'PowerBiReportsWpWebPartStrings';
@@ -22,6 +23,7 @@ export interface IPowerBiReportsWpWebPartProps {
   listname: string;
   iframeheight: number;
   reportsmenutitle: string;
+  menuposition: string;
   webparttitle: string;
   errorloglist: string;
 }
@@ -49,6 +51,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
         iframeheight: this.properties.iframeheight,
         reportsmenutitle: this.properties.reportsmenutitle,
         webparttitle: this.properties.webparttitle,
+        menuposition: this.properties.menuposition,
         errorloglist: this.properties.errorloglist,
         openpropertypane: () => {
           this.context.propertyPane.open();
@@ -79,7 +82,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
   }
 
   protected onAfterPropertyPaneChangesApplied(): void {
-    this.registerLogging();
+    this.registerLogging();    
   }
 
   protected onDispose(): void {
@@ -115,6 +118,10 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
                 }),
                 PropertyPaneTextField('reportsmenutitle', {
                   label: "Menu title"
+                }),
+                PropertyPaneChoiceGroup('menuposition', {
+                  label: 'Menu Position (page referesh required)',                  
+                  options: [{key: 'left', text: 'Left'}, {key:'right', text: 'Right'}] 
                 }),
                 PropertyPaneTextField('errorloglist', {
                   label: "Error list title",

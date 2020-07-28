@@ -27,6 +27,7 @@
         "description": "Webpart will display the PowerBI Reports configured in your list.",
         "reportsmenutitle": "Reports Menu",
         "webparttitle": "Power BI Reports Viewer",
+        "menuposition": "right",
         "iframeheight": 500
       }
     }

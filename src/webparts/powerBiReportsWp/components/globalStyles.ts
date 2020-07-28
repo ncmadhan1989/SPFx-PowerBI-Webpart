@@ -34,8 +34,31 @@ const menuIconStyles: IButtonStyles = {
         color: '#000000'
     }
 };
-const panelStyles = (props: IPanelStyleProps): Partial<IPanelStyles> => ({
+const panelLeftStyles = (props: IPanelStyleProps): Partial<IPanelStyles> => ({
     ...({
+        main:{
+            left: 0,
+            right: 'auto'
+        },
+        header: {
+            marginTop: '0px !important',
+            marginBottom: '0px !important',
+        },
+        headerText: {
+            fontSize: '16px',
+        },
+        content:{
+            paddingLeft: '15px !important',
+            paddingRight: '15px !important'
+        }
+    })
+});
+const panelRightStyles = (props: IPanelStyleProps): Partial<IPanelStyles> => ({
+    ...({
+        main:{
+            right: 0,
+            left: 'auto'
+        },
         header: {
             marginTop: '0px !important',
             marginBottom: '0px !important',
@@ -96,7 +119,8 @@ export const styles = {
     closeIconButtonStyles: closeIconButtonStyles,
     menuIconStyles: menuIconStyles,
     expandCollapseIconStyles: expandCollapseIconStyles,
-    panelStyles: panelStyles,
+    panelLeftStyles: panelLeftStyles,
+    panelRightStyles: panelRightStyles,
     detailsRowStyles: detailRowStyles,
     groupHeaderStyles: groupHeaderStyles,
     searchBoxStyles: searchBoxStyles,
@@ -130,12 +154,21 @@ export const classNames = mergeStyleSets({
         width: '100%',
         marginTop: '5px',
     },
-    layerHostClass: {
+    layerHostClassRight: {
         position: 'absolute',
         width: 'auto',
         height: '100%',
         top: '32px',
         right: 0,
+        zIndex: 1200
+    },
+    layerHostClassLeft: {
+        position: 'absolute',
+        width: 'auto',
+        height: '100%',
+        top: '32px',
+        left: 0,
+        right: 'auto',
         zIndex: 1200
     },
     powerbilogobg: {

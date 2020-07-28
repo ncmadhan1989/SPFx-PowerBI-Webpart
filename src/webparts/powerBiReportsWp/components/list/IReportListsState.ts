@@ -7,6 +7,7 @@ export interface IReportListsState {
     isAllGroupsCollapsed: boolean;
     listItemsGroupedByCategory: IReport[];
     groups: IGroup[];
+    menuPosition: string;
     selection: Selection;
     columns: IColumn[];
     iframesrc: string;
