@@ -106,8 +106,9 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
     return {
       pages: [
         {
+          displayGroupsAsAccordion: true,
           header: {
-            description: strings.PropertyPaneDescription
+            description: "You can display multiple reports from Power BI embed url, which can be sourced from the SharePoint list as configured below."
           },
           groups: [
             {
@@ -127,6 +128,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
             },
             {
               groupName: "Webpart Configuration(s)",
+              isCollapsed: true,
               groupFields: [
                 PropertyPaneTextField('webparttitle', {
                   label: "Webpart title"
@@ -152,7 +154,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
               ]
             },
             {
-              groupName: "PowerBI Report Configuration(s)",
+              groupName: "Report Configuration(s)",
               groupFields: [
                 PropertyPaneToggle('shownavigationpane', {
                   label: 'Show Navigation Pane',
