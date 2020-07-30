@@ -1,4 +1,4 @@
-# SPFx PowerBI Webpart
-SharePoint Framework (SPFx) webpart to display the PowerBI reports in IFRAME, the reports link are source from the SharePoint list, which can be provided from the webpart properties.
+# SPFx PowerBI Reports Viewer Webpart
+SharePoint Framework (SPFx) webpart to display the Multiple PowerBI reports in SPFx webpart, the reports link are sourced from the SharePoint list (ReportsConfig), which can be provided from the webpart properties.
 
 
