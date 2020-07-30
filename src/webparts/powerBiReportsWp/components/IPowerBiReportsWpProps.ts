@@ -7,5 +7,7 @@ export interface IPowerBiReportsWpProps {
   menuposition: string;
   webparttitle: string;
   errorloglist: string;
+  shownavigationpane: boolean;
+  showfilterpane: boolean; 
   openpropertypane(): void;
 }

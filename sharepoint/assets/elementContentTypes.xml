@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">	
+	<ContentType ID="0x0100FCD7D20B10A34E7A8F995B50F0A383CC" Name="ReportsConfig" Group="SPFx Content Types" Description="Content Type for Reports Configuration">
+		<FieldRefs>
+			<FieldRef ID="{C5D3CED8-2935-40A5-9097-3ED93C2A8DB5}" />
+			<FieldRef ID="{EA4B43C0-60EF-4861-A6B5-D419003A2096}" />
+			<FieldRef ID="{EE29DD17-1ED3-4C1F-9BE4-AA88885A4C33}" />
+			<FieldRef ID="{9DB5DD70-7122-4810-8752-BFB5B59B91B9}" />
+		</FieldRefs>
+	</ContentType>
+	<ContentType ID="0x010095A693D999AF4263B00B82D51B75749C" Name="ErrorLog" Group="SPFx Content Types" Description="Content Type for Error Log">
+		<FieldRefs>
+			<FieldRef ID="{3585E737-3F8E-4B81-B5CF-EAA59945FD07}" />
+			<FieldRef ID="{1524506D-06C3-4757-956F-54CA1B81D6FB}" />
+			<FieldRef ID="{B4AA95A9-0F78-4BDD-A0A6-D35C16FC8A8B}" />
+			<FieldRef ID="{D1F1B2C4-CE1F-4826-AFC9-DDD30663A9B4}" />
+			<FieldRef ID="{8EB481E8-65F6-414F-A801-73E68E37E093}" />
+			<FieldRef ID="{7E5815B4-D74A-4CB3-80FC-1F99D4949880}" />
+			<FieldRef ID="{E50F1DC7-D7E6-4EAB-8670-518C739435E2}" />
+		</FieldRefs>
+	</ContentType>	
+</Elements>

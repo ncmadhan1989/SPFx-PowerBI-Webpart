@@ -28,7 +28,9 @@
         "reportsmenutitle": "Reports Menu",
         "webparttitle": "Power BI Reports Viewer",
         "menuposition": "right",
-        "iframeheight": 500
+        "iframeheight": 500,
+        "shownavigationpane": false,
+        "showfilterpane": false
       }
     }
   ]

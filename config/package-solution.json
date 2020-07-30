@@ -1,12 +1,29 @@
-{
+{  
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
     "name": "power-bi-spfx-webparts-client-side-solution",
     "title": "PowerBI Reports Viewer Webpart",
     "id": "d9f5bbbe-869c-41b2-97f8-3783df8dc87f",
-    "version": "2.5.0.0",
+    "version": "4.0.0.0",
     "includeClientSideAssets": true,
-    "isDomainIsolated": false
+    "isDomainIsolated": false,
+    "features": [{
+        "id": "20ecb15b-29c4-4e00-92eb-baa574c6c5ae",
+        "title": "Feature - PowerBI Reports Viewer Webpart",
+        "description": "Feature to provision SharePoint assets for PowerBI Reports Viewer Webpart",
+        "version": "4.0.0.0",
+        "assets": {
+          "elementManifests": [
+            "elementFields.xml",
+            "elementContentTypes.xml",
+            "elementListInstances.xml"
+          ],
+          "elementFiles": [
+            "schemaReportsConfig.xml",
+            "schemaErrorLog.xml"
+          ]
+        }
+      }]
   },
   "paths": {
     "zippedPackage": "solution/power-bi-spfx-webparts.sppkg"

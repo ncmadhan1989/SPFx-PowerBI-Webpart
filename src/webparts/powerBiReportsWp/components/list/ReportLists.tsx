@@ -27,7 +27,7 @@ import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { IFocusTrapZoneProps } from 'office-ui-fabric-react/lib/FocusTrapZone';
 
 const focusTrapZoneProps: IFocusTrapZoneProps = {
-    isClickableOutsideFocusTrap: true,
+    isClickableOutsideFocusTrap: false,
     forceFocusInsideTrap: false,
 };
 
@@ -38,6 +38,8 @@ export interface IReportListsProps {
     reportsmenutitle: string;
     menuposition: string;
     webparttitle: string;
+    shownavigationpane: boolean;
+    showfilterpane: boolean;
     openpropertypane(): void;
 }
 

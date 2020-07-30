@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+	<ListInstance CustomSchema="schemaReportsConfig.xml" FeatureId="00bfea71-de22-43b2-a848-c05709900100" Title="ReportsConfig" Description="Reports Configuration" TemplateType="100" Url="Lists/ReportsConfig">
+	</ListInstance>
+	 <ListInstance CustomSchema="schemaErrorLog.xml" FeatureId="00bfea71-de22-43b2-a848-c05709900100" Title="ErrorLog" Description="Error logging" TemplateType="100" Url="Lists/ErrorLog">
+	</ListInstance> 
+</Elements>

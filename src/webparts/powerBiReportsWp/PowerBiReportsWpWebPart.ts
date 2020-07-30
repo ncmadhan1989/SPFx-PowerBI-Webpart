@@ -5,7 +5,8 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField,
   PropertyPaneSlider,
-  PropertyPaneChoiceGroup
+  PropertyPaneChoiceGroup,
+  PropertyPaneToggle
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'PowerBiReportsWpWebPartStrings';
@@ -26,6 +27,8 @@ export interface IPowerBiReportsWpWebPartProps {
   menuposition: string;
   webparttitle: string;
   errorloglist: string;
+  shownavigationpane: boolean;
+  showfilterpane: boolean;
 }
 
 export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowerBiReportsWpWebPartProps> {
@@ -53,6 +56,8 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
         webparttitle: this.properties.webparttitle,
         menuposition: this.properties.menuposition,
         errorloglist: this.properties.errorloglist,
+        shownavigationpane: this.properties.shownavigationpane,
+        showfilterpane: this.properties.showfilterpane,
         openpropertypane: () => {
           this.context.propertyPane.open();
         }
@@ -64,9 +69,9 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
 
   private registerLogging(): void {
     try {
-      if (this.context && 
-          this.context.pageContext && 
-          this.properties.errorloglist) {
+      if (this.context &&
+        this.context.pageContext &&
+        this.properties.errorloglist) {
         let errorLoggerListener = new ErrorLogger(
           "PowerBIReportViewer",
           this.properties.errorloglist,
@@ -82,7 +87,7 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
   }
 
   protected onAfterPropertyPaneChangesApplied(): void {
-    this.registerLogging();    
+    this.registerLogging();
   }
 
   protected onDispose(): void {
@@ -109,10 +114,20 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
               groupName: strings.BasicGroupName,
               groupFields: [
                 PropertyPaneTextField('listname', {
-                  label: 'Reports list name',
+                  label: 'Reports list title',
                   validateOnFocusOut: true,
                   onGetErrorMessage: this.validateListName.bind(this)
                 }),
+                PropertyPaneTextField('errorloglist', {
+                  label: "Error list title",
+                  validateOnFocusOut: true,
+                  onGetErrorMessage: this.validateListName.bind(this)
+                })
+              ]
+            },
+            {
+              groupName: "Webpart Configuration(s)",
+              groupFields: [
                 PropertyPaneTextField('webparttitle', {
                   label: "Webpart title"
                 }),
@@ -120,13 +135,8 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
                   label: "Menu title"
                 }),
                 PropertyPaneChoiceGroup('menuposition', {
-                  label: 'Menu Position (page referesh required)',                  
-                  options: [{key: 'left', text: 'Left'}, {key:'right', text: 'Right'}] 
-                }),
-                PropertyPaneTextField('errorloglist', {
-                  label: "Error list title",
-                  validateOnFocusOut: true,
-                  onGetErrorMessage: this.validateListName.bind(this)
+                  label: 'Menu Position (page referesh required)',
+                  options: [{ key: 'left', text: 'Left' }, { key: 'right', text: 'Right' }]
                 }),
                 PropertyPaneSlider('iframeheight', {
                   label: 'Set IFrame height',
@@ -137,7 +147,26 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
                   step: 10
                 }),
                 PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
+                  label: "Webpart description"
+                })
+              ]
+            },
+            {
+              groupName: "PowerBI Report Configuration(s)",
+              groupFields: [
+                PropertyPaneToggle('shownavigationpane', {
+                  label: 'Show Navigation Pane',
+                  key: "shownavigationpane",
+                  checked: false,
+                  onText: "On",
+                  offText: "Off"
+                }),
+                PropertyPaneToggle('showfilterpane', {
+                  label: 'Show Filter Pane',
+                  key: "showfilterpane",
+                  checked: false,
+                  onText: "On",
+                  offText: "Off"
                 })
               ]
             }
