@@ -92,5 +92,5 @@ You can add webpart in a sharepoint page in two ways.
 ## Resources
 - **Setup Microsoft 365 tenant** - [Set up your Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
 - **Setup development environment** - [Set up your SharePoint Framework development environment](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-development-environment)
-- **FluentUI React - [FluentUI controls](https://developer.microsoft.com/en-us/fluentui#/controls/web)
+- **FluentUI React** - [FluentUI controls](https://developer.microsoft.com/en-us/fluentui#/controls/web)
 - **PnP JS library** - [PnP JS getting started](https://pnp.github.io/pnpjs/), [PnP JS list items operations](https://pnp.github.io/pnpjs/sp/items/), [Use (PnPJS) library with SharePoint Framework web parts](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/guidance/use-sp-pnp-js-with-spfx-web-parts)
