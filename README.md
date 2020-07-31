@@ -55,6 +55,8 @@ You can add webpart in a sharepoint page in two ways.
   - add webpart in a full-width column layout.
   - add webpart as a Single Part App Page - you can learn more about this here [Single Part App Page](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/single-part-app-pages?tabs=pnpposh)
   
+## Resources
+** setup Microsoft 365 tenant ** - https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant
   
 
 
