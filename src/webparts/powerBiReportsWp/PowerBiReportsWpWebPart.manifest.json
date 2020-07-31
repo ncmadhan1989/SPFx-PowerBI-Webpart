@@ -25,6 +25,8 @@
       "officeFabricIconFontName": "PowerAppsLogo",
       "properties": {
         "description": "Webpart will display the PowerBI Reports configured in your list.",
+        "listname": "ReportsConfig",
+        "errorloglist": "ErrorLog",
         "reportsmenutitle": "Reports Menu",
         "webparttitle": "Power BI Reports Viewer",
         "menuposition": "right",
