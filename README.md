@@ -49,6 +49,24 @@ gulp bundle --ship
 ```
 gulp package-solution --ship
 ```
+### Provisioning SharePoint assets
+Once the package is deployed in AppCatalog, you have to add an app in your sharepoint site, after you add an app, the solution will provision sharepoint assets as below.
+- Site columns and Content Types will be created.
+- Content Type with columns - ReportsConfig
+  - ReportName (single line of text)
+  - ReportURL (multiline of text)
+  - CategoryName (choice column)
+  - SubCategory (choice column)
+- Content Type with columns - ErrorLog
+  - ApplicationName (single line of text)
+  - CodeFileName (single line of text)
+  - MethodName (single line of text)
+  - LoggedByUser (people picker)
+  - LoggedOn (Date & time)
+  - ErrorMessage (multiline text)
+  - StackTrace (multiline text)
+- ReportsConfig list will be created with the content type (ReportsConfig)
+- ErrorLog list will be created with the content type (ErrorLog)
 ### Adding Webpart to SharePoint
 You can add webpart in a sharepoint page in two ways.
   - add webpart on a modern page.
