@@ -35,10 +35,27 @@ To run the application on workbench and serve the localhost resources, type the 
 gulp serve --nobrowser
 ```
   
-### Deploying and Adding the Webpart to SharePoint online.
+### Deploying the Webpart to SharePoint online.
 You can follow the microsoft documentation to deploy the SPFx webpart to a SharePoint page.
 [Deploy your client-side web part to a SharePoint page](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/get-started/serve-your-web-part-in-a-sharepoint-page).
 
+To deploy the webpart in SharePoint online, run the command, this will create "power-bi-spfx-webparts.sppkg" file under sharepoint/solution folder and then you can upload this file to the AppCatalog site and deploy.
+```
+gulp build
+```
+```
+gulp bundle --ship
+```
+```
+gulp package-solution --ship
+```
+### Adding Webpart to SharePoint
+You can add webpart in a sharepoint page in two ways.
+  - add webpart on a modern page.
+  - add webpart in a full-width column layout.
+  - add webpart as a Single Part App Page - you can learn more about this here [Single Part App Page](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/single-part-app-pages?tabs=pnpposh)
+  
+  
 
 
 
