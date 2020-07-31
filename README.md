@@ -59,6 +59,17 @@ You can add webpart in a sharepoint page in two ways.
 
 ![full-width page](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi1.png)
 
+![configure](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi2.png)
+
+![properties](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi3.png)
+
+![right menu](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi4.png)
+
+![right menu](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi4.1.png)
+
+![report with menu](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi5.png)
+
+![report without menu](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi6.png)
   
 ## Resources
 - **Setup Microsoft 365 tenant** - [Set up your Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
