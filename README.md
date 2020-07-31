@@ -57,11 +57,10 @@ You can add webpart in a sharepoint page in two ways.
  
 ### Screenshots of webpart on SharePoint page.
 
-
+![full-width page](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi1.png)
 
   
 ## Resources
-**Setup Microsoft 365 tenant** - [Set up your Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
-**Setup development environment** - [Set up your SharePoint Framework development environment](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-development-environment)
-**PnP JS library** - [PnP JS getting started](https://pnp.github.io/pnpjs/), [PnP JS list items operations](https://pnp.github.io/pnpjs/sp/items/), [Use (PnPJS) library with SharePoint Framework web parts](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/guidance/use-sp-pnp-js-with-spfx-web-parts)
-
+- **Setup Microsoft 365 tenant** - [Set up your Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
+- **Setup development environment** - [Set up your SharePoint Framework development environment](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-development-environment)
+- **PnP JS library** - [PnP JS getting started](https://pnp.github.io/pnpjs/), [PnP JS list items operations](https://pnp.github.io/pnpjs/sp/items/), [Use (PnPJS) library with SharePoint Framework web parts](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/guidance/use-sp-pnp-js-with-spfx-web-parts)
