@@ -15,6 +15,12 @@ The following properties have been added to configure the webpart.<br/>
   - PowerBI Report Configurations
     - Show Navigation Pane: Show/Hide the page navigation of the PowerBI reports.
     - Show Filter Pane: Show/Hide the filters pane of the PowerBI report. 
+    
+## Prerequisites
+### Set up your SharePoint Framework development environment
+You can follow this documentation to setup development environment for SharePoint Framework.
+[https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-development-environment](Getting started with SharePoint Framework)
+
 
 
 
