@@ -18,8 +18,27 @@ The following properties have been added to configure the webpart.<br/>
     
 ## Prerequisites
 ### Set up your SharePoint Framework development environment
-You can follow this documentation to setup development environment for SharePoint Framework.
-[https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-development-environment](Getting started with SharePoint Framework)
+You can follow the microsoft documentation to setup development environment for SharePoint Framework.
+[Getting started with SharePoint Framework](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-development-environment).
+
+### Running the application locally
+Clone or download the project in your local repository - git clone <https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart> <br/>
+Open the cloned/downloaded project folder and type the following command to install all the npm packages and dependencies mentioned in the package.json file. <br/>
+```
+npm install
+```
+To run the application on workbench and serve the localhost resources, type the following command <br/>
+  - Open the SharePoint online workbench site <https://<tenant>/<site url>/_layouts/15/workbench.aspx
+  - Add the webpart name 'PowerBI Reports Viewer Webpart'.
+  - Configure the webpart by providing the properties value.
+```
+gulp serve --nobrowser
+```
+  
+### Deploying and Adding the Webpart to SharePoint online.
+You can follow the microsoft documentation to deploy the SPFx webpart to a SharePoint page.
+[Deploy your client-side web part to a SharePoint page](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/get-started/serve-your-web-part-in-a-sharepoint-page).
+
 
 
 
