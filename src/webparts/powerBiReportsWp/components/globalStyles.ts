@@ -155,6 +155,14 @@ export const classNames = mergeStyleSets({
         minHeight: '100%',
         padding: '20px',
     },
+    spinnerWrapper:{
+        position: 'absolute',
+        top: '50%',
+        left: 0,
+        right: 0,
+        margin: '0 auto',
+        zIndex: 1500
+    },
     controlWrapper: {
         width: '100%',
         marginTop: '5px',

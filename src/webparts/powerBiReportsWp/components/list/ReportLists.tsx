@@ -6,7 +6,7 @@ import { IReport } from '../models/IReport';
 import { IReportListsState } from './IReportListsState';
 import { ReportDataProvider } from '../dataprovider/ReportDataProvider';
 import IFrameContainer from '../frame/IFrameContainer';
-import { Fabric } from 'office-ui-fabric-react/lib/index';
+import { Fabric, Spinner } from 'office-ui-fabric-react/lib/index';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { Stack } from 'office-ui-fabric-react/lib/Stack';
 import { Label } from 'office-ui-fabric-react/lib/Label';
@@ -61,6 +61,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         this._reportDataProvider = ReportDataProvider.getInstance();
         this.state = {
             isOpen: true,
+            isLoading: true,
             isAllGroupsCollapsed: false,
             listItemsGroupedByCategory: [],
             groups: [],
@@ -120,6 +121,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         this._selection.setItems(res);
         this.setState({
             listItemsGroupedByCategory: res,
+            isLoading: false,
             groups: _groups,
             selection: this._selection,
             columns: this._columns
@@ -216,9 +218,9 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         this._setResults(this._results);
     }
 
-    private _selectPanelType(type: string): PanelType{
-        switch(type){
-            case 'custom' : return PanelType.custom;
+    private _selectPanelType(type: string): PanelType {
+        switch (type) {
+            case 'custom': return PanelType.custom;
             case 'small': return PanelType.smallFixedFar;
             case 'medium': return PanelType.medium;
             default: return PanelType.smallFixedFar;
@@ -226,7 +228,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
     }
 
     public render() {
-        const { listItemsGroupedByCategory, isAllGroupsCollapsed, groups, selection, columns, iframesrc } = this.state;
+        const { listItemsGroupedByCategory, isAllGroupsCollapsed, groups, selection, columns, iframesrc, isLoading } = this.state;
         const panelType: PanelType = this._selectPanelType(this.props.paneltype);
         return (
             <div className="container-fluid">
@@ -297,21 +299,30 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                     <Fabric>
                                         <div className={classNames.controlWrapper}>
                                             {
-                                                <FocusZone>
-                                                    <SelectionZone selection={selection} selectionMode={SelectionMode.single}>
-                                                        <GroupedList
-                                                            items={listItemsGroupedByCategory}
-                                                            groupProps={{
-                                                                onRenderHeader: this._onRenderHeader
-                                                            }}
-                                                            usePageCache={true}
-                                                            selection={selection}
-                                                            groups={groups}
-                                                            onRenderCell={this._onRenderCell}
-                                                            selectionMode={SelectionMode.single}
-                                                        />
-                                                    </SelectionZone>
-                                                </FocusZone>
+                                                isLoading ?
+                                                    (
+                                                        <div className={classNames.spinnerWrapper}>
+                                                            <Spinner label="Working on it..." labelPosition="bottom"></Spinner>
+                                                        </div>
+                                                    )
+                                                    :
+                                                    (
+                                                        <FocusZone>
+                                                            <SelectionZone selection={selection} selectionMode={SelectionMode.single}>
+                                                                <GroupedList
+                                                                    items={listItemsGroupedByCategory}
+                                                                    groupProps={{
+                                                                        onRenderHeader: this._onRenderHeader
+                                                                    }}
+                                                                    usePageCache={true}
+                                                                    selection={selection}
+                                                                    groups={groups}
+                                                                    onRenderCell={this._onRenderCell}
+                                                                    selectionMode={SelectionMode.single}
+                                                                />
+                                                            </SelectionZone>
+                                                        </FocusZone>
+                                                    )
                                             }
                                         </div>
                                     </Fabric>
@@ -371,7 +382,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                 groupNestingDepth={nestingDepth}
                 item={item}
                 checkboxVisibility={CheckboxVisibility.always}
-                indentWidth={10} 
+                indentWidth={10}
                 itemIndex={itemIndex}
                 selection={this.state.selection}
                 selectionMode={SelectionMode.single}
