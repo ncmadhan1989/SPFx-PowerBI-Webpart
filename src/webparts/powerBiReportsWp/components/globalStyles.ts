@@ -91,7 +91,12 @@ const groupHeaderStyles = (props: IGroupHeaderStyleProps): Partial<IGroupHeaderS
         },
         title: {
             fontSize: '16px',
-            fontWeight: '400'
+            fontWeight: '400',
+            whiteSpace: 'pre-line',
+            padding: '2px 0px 5px 5px'
+        },
+        headerCount:{
+            padding: '2px 0px 5px 0px'
         }
     })
 });

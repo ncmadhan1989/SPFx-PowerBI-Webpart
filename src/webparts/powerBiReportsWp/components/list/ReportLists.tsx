@@ -22,7 +22,7 @@ import {
     IColumn, DetailsRow, CheckboxVisibility
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { LayerHost } from 'office-ui-fabric-react/lib/Layer';
-import { Panel, IPanelProps, IPanelHeaderRenderer } from 'office-ui-fabric-react/lib/Panel';
+import { Panel, IPanelProps, IPanelHeaderRenderer, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { IFocusTrapZoneProps } from 'office-ui-fabric-react/lib/FocusTrapZone';
 
@@ -38,6 +38,8 @@ export interface IReportListsProps {
     reportsmenutitle: string;
     menuposition: string;
     webparttitle: string;
+    paneltype: string;
+    panelwidth: number;
     shownavigationpane: boolean;
     showfilterpane: boolean;
     openpropertypane(): void;
@@ -214,8 +216,18 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
         this._setResults(this._results);
     }
 
+    private _selectPanelType(type: string): PanelType{
+        switch(type){
+            case 'custom' : return PanelType.custom;
+            case 'small': return PanelType.smallFixedFar;
+            case 'medium': return PanelType.medium;
+            default: return PanelType.smallFixedFar;
+        }
+    }
+
     public render() {
         const { listItemsGroupedByCategory, isAllGroupsCollapsed, groups, selection, columns, iframesrc } = this.state;
+        const panelType: PanelType = this._selectPanelType(this.props.paneltype);
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -270,6 +282,8 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                                 <Panel
                                     isOpen={this.state.isOpen}
                                     hasCloseButton
+                                    type={panelType}
+                                    customWidth={this.props.panelwidth + 'px'}
                                     closeButtonAriaLabel="Close"
                                     onRenderHeader={this._onRenderPanelHeader}
                                     onRenderNavigationContent={this._onRenderPanelNavigationContent}
@@ -357,7 +371,7 @@ export default class CustomerList extends React.Component<IReportListsProps, IRe
                 groupNestingDepth={nestingDepth}
                 item={item}
                 checkboxVisibility={CheckboxVisibility.always}
-                indentWidth={10}
+                indentWidth={10} 
                 itemIndex={itemIndex}
                 selection={this.state.selection}
                 selectionMode={SelectionMode.single}

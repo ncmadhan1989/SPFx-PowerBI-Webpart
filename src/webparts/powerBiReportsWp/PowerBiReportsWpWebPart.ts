@@ -6,7 +6,8 @@ import {
   PropertyPaneTextField,
   PropertyPaneSlider,
   PropertyPaneChoiceGroup,
-  PropertyPaneToggle
+  PropertyPaneToggle,
+  PropertyPaneDropdown
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as strings from 'PowerBiReportsWpWebPartStrings';
@@ -27,6 +28,8 @@ export interface IPowerBiReportsWpWebPartProps {
   menuposition: string;
   webparttitle: string;
   errorloglist: string;
+  paneltype: string;
+  panelwidth: number;
   shownavigationpane: boolean;
   showfilterpane: boolean;
 }
@@ -56,6 +59,8 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
         webparttitle: this.properties.webparttitle,
         menuposition: this.properties.menuposition,
         errorloglist: this.properties.errorloglist,
+        paneltype: this.properties.paneltype,
+        panelwidth: this.properties.panelwidth,
         shownavigationpane: this.properties.shownavigationpane,
         showfilterpane: this.properties.showfilterpane,
         openpropertypane: () => {
@@ -139,6 +144,23 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
                 PropertyPaneChoiceGroup('menuposition', {
                   label: 'Menu Position (page referesh required)',
                   options: [{ key: 'left', text: 'Left' }, { key: 'right', text: 'Right' }]
+                }),
+                PropertyPaneDropdown('paneltype',{
+                  label: 'Panel type', 
+                  selectedKey: 'small',
+                  options: [
+                    { key: 'custom', text: 'Custom' }, 
+                    { key: 'small', text: 'Small' },
+                    { key: 'medium', text: 'Medium' }
+                  ]
+                }),
+                PropertyPaneSlider('panelwidth', {
+                  label: 'Set Reports menu panel width',
+                  min: 340,
+                  max: 600,
+                  value: 340,
+                  showValue: true,
+                  step: 10
                 }),
                 PropertyPaneSlider('iframeheight', {
                   label: 'Set IFrame height',

@@ -31,10 +31,12 @@ export default class PowerBiReportsWp extends React.Component<IPowerBiReportsWpP
                 reportsmenutitle={this.props.reportsmenutitle}
                 webparttitle={this.props.webparttitle}
                 menuposition={this.props.menuposition}
+                paneltype={this.props.paneltype}
+                panelwidth={this.props.panelwidth}
                 shownavigationpane={this.props.shownavigationpane}
                 showfilterpane={this.props.showfilterpane}
                 openpropertypane={this.props.openpropertypane}
-                >
+              >
               </ReportLists>
             </DocumentCard>
           </div>
