@@ -49,6 +49,24 @@ gulp bundle --ship
 ```
 gulp package-solution --ship
 ```
+### Provisioning SharePoint assets
+Once the package is deployed in AppCatalog, you have to add an app in your sharepoint site, after you add an app, the solution will provision sharepoint assets as below.
+- Site columns and Content Types will be created.
+- Content Type with columns - ReportsConfig
+  - ReportName (single line of text)
+  - ReportURL (multiline of text)
+  - CategoryName (choice column)
+  - SubCategory (choice column)
+- Content Type with columns - ErrorLog
+  - ApplicationName (single line of text)
+  - CodeFileName (single line of text)
+  - MethodName (single line of text)
+  - LoggedByUser (people picker)
+  - LoggedOn (Date & time)
+  - ErrorMessage (multiline text)
+  - StackTrace (multiline text)
+- ReportsConfig list will be created with the content type (ReportsConfig)
+- ErrorLog list will be created with the content type (ErrorLog)
 ### Adding Webpart to SharePoint
 You can add webpart in a sharepoint page in two ways.
   - add webpart on a modern page.
@@ -57,11 +75,22 @@ You can add webpart in a sharepoint page in two ways.
  
 ### Screenshots of webpart on SharePoint page.
 
+![full-width page](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi1.png)
 
+![configure](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi2.png)
 
+![properties](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi3.png)
+
+![right menu](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi4.png)
+
+![right menu](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi4.1.png)
+
+![report with menu](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi5.png)
+
+![report without menu](https://github.com/Vikas-Salvi/SPFx-PowerBI-Webpart/blob/master/sharepoint/assets/powerbi6.png)
   
 ## Resources
-**Setup Microsoft 365 tenant** - [Set up your Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
-**Setup development environment** - [Set up your SharePoint Framework development environment](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-development-environment)
-**PnP JS library** - [PnP JS getting started](https://pnp.github.io/pnpjs/), [PnP JS list items operations](https://pnp.github.io/pnpjs/sp/items/), [Use (PnPJS) library with SharePoint Framework web parts](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/guidance/use-sp-pnp-js-with-spfx-web-parts)
-
+- **Setup Microsoft 365 tenant** - [Set up your Microsoft 365 tenant](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-developer-tenant)
+- **Setup development environment** - [Set up your SharePoint Framework development environment](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/set-up-your-development-environment)
+- **FluentUI React** - [FluentUI controls](https://developer.microsoft.com/en-us/fluentui#/controls/web)
+- **PnP JS library** - [PnP JS getting started](https://pnp.github.io/pnpjs/), [PnP JS list items operations](https://pnp.github.io/pnpjs/sp/items/), [Use (PnPJS) library with SharePoint Framework web parts](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/guidance/use-sp-pnp-js-with-spfx-web-parts)
