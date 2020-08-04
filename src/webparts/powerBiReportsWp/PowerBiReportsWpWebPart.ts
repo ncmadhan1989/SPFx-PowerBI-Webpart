@@ -145,11 +145,11 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
                   label: 'Menu Position (page referesh required)',
                   options: [{ key: 'left', text: 'Left' }, { key: 'right', text: 'Right' }]
                 }),
-                PropertyPaneDropdown('paneltype',{
-                  label: 'Panel type', 
+                PropertyPaneDropdown('paneltype', {
+                  label: 'Panel type',
                   selectedKey: 'small',
                   options: [
-                    { key: 'custom', text: 'Custom' }, 
+                    { key: 'custom', text: 'Custom' },
                     { key: 'small', text: 'Small' },
                     { key: 'medium', text: 'Medium' }
                   ]
@@ -171,7 +171,10 @@ export default class PowerBiReportsWpWebPart extends BaseClientSideWebPart<IPowe
                   step: 10
                 }),
                 PropertyPaneTextField('description', {
-                  label: "Webpart description"
+                  label: "Webpart description", 
+                  multiline: true,
+                  resizable: true, 
+                  rows: 3
                 })
               ]
             },
